@@ -3,7 +3,7 @@
 use crate::{Module, Trait};
 use frame_support::{
     impl_outer_dispatch, impl_outer_event, impl_outer_origin, parameter_types,
-    traits::{Currency, Get, ReservableCurrency},
+    traits::Get,
     weights::Weight,
 };
 use frame_system as system;
@@ -101,8 +101,6 @@ parameter_types! {
     pub const MinimumPeriod: u64 = 1;
 }
 
-/** Balances -- start **/
-
 thread_local! {
     static EXISTENTIAL_DEPOSIT: RefCell<u64> = RefCell::new(0);
 }
@@ -115,6 +113,7 @@ impl Get<u64> for ExistentialDeposit {
 }
 
 impl pallet_balances::Trait for Test {
+    type MaxLocks = ();
     type Balance = u64;
     type Event = MetaEvent;
     type DustRemoval = ();
@@ -138,9 +137,10 @@ impl Convert<Weight, BalanceOf<Self>> for Test {
     }
 }
 
-type Timestamp = pallet_timestamp::Module<Test>;
 pub type Balances = pallet_balances::Module<Test>;
+type Randomness = pallet_randomness_collective_flip::Module<Test>;
 type System = system::Module<Test>;
+type Timestamp = pallet_timestamp::Module<Test>;
 
 impl contracts::Trait for Test {
     type Time = Timestamp;
@@ -158,7 +158,7 @@ impl contracts::Trait for Test {
     type MaxDepth = MaxDepth;
     type MaxValueSize = MaxValueSize;
     type WeightPrice = ();
-    type Randomness = ();
+    type Randomness = Randomness;
 }
 
 impl system::Trait for Test {
@@ -182,11 +182,11 @@ impl system::Trait for Test {
     type AvailableBlockRatio = AvailableBlockRatio;
     type MaximumBlockLength = MaximumBlockLength;
     type Version = ();
-    type ModuleToIndex = ();
     type AccountData = pallet_balances::AccountData<u64>;
     type OnNewAccount = ();
     type OnKilledAccount = ();
     type SystemWeightInfo = ();
+    type PalletInfo = ();
 }
 
 impl sudo::Trait for Test {
@@ -203,19 +203,9 @@ impl Trait for Test {
     type Event = MetaEvent;
 }
 
-pub type Contracts = contracts::Module<Test>;
 pub type Sudo = sudo::Module<Test>;
 
 pub type EscrowGateway = Module<Test>;
-
-// This function basically just builds a genesis storage key/value store according to
-// our desired mockup.
-pub fn new_test_ext() -> sp_io::TestExternalities {
-    system::GenesisConfig::default()
-        .build_storage::<Test>()
-        .unwrap()
-        .into()
-}
 
 pub struct ExtBuilder {
     existential_deposit: u64,
