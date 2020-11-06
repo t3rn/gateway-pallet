@@ -4,9 +4,9 @@ description = 'Gateway for multi-phase contracts execution secured by escrow acc
 edition = '2018'
 homepage = 'https://github.com/t3rn/t3rn'
 license = 'Apache 2.0'
-name = 'escrow-gateway-balances'
+name = 'pallet-runtime-gateway'
 repository = 'https://github.com/t3rn/t3rn.git'
-version = '2.0.0'
+version = '0.3.0'
 
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
@@ -23,7 +23,7 @@ version = "0.1"
 [dependencies.gateway-escrow-engine]
 default-features = false
 path = '../escrow-engine'
-version = '2.0.0'
+version = '0.3.0'
 
 [dependencies.frame-support]
 default-features = false
@@ -49,17 +49,13 @@ version = '2.0.0'
 [dependencies.versatile-wasm]
 default-features = false
 path = '../escrow-engine/versatile-wasm'
-version = '0.1.0'
+version = '0.3.0'
 
 [dependencies.sp-std]
 default-features = false
 version = '2.0.0'
 
 [dev-dependencies.sp-core]
-default-features = false
-version = '2.0.0'
-
-[dependencies.sp-io]
 default-features = false
 version = '2.0.0'
 
@@ -85,6 +81,7 @@ version = '*'
 wat = { version = "1.0", default-features = false }
 flipper = {version = '2.0.0', path = "fixtures/flipper", default-features = false}
 weights = {version = '2.0.0', path = "fixtures/weights", default-features = false}
+sp-io = {version = '2.0.0', default-features = false}
 
 [features]
 default = ['std']
@@ -95,4 +92,5 @@ std = [
     'pallet-balances/std',
     'versatile-wasm/std',
     'gateway-escrow-engine/std',
+    'pallet-transaction-payment/std',
 ]
